@@ -96,4 +96,8 @@ public class Todo {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public boolean hasDescription() {
+        return description != null && !description.trim().isEmpty();
+    }
 }

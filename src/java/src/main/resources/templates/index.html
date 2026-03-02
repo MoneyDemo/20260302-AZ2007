@@ -27,7 +27,7 @@
     <!-- Flash Messages -->
     <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-check-circle me-2"></i><span th:text="${successMessage}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close alert"></button>
     </div>
 
     <!-- Add Todo Form -->
@@ -40,13 +40,13 @@
                 <div class="row g-2">
                     <div class="col-12 col-md-4">
                         <input type="text" th:field="*{title}" class="form-control"
-                               th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'"
+                               th:errorclass="is-invalid"
                                placeholder="Todo title *" maxlength="255">
                         <div class="invalid-feedback" th:errors="*{title}"></div>
                     </div>
                     <div class="col-12 col-md-6">
                         <input type="text" th:field="*{description}" class="form-control"
-                               th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
+                               th:errorclass="is-invalid"
                                placeholder="Description (optional)" maxlength="1000">
                         <div class="invalid-feedback" th:errors="*{description}"></div>
                     </div>
@@ -95,7 +95,7 @@
                         <span th:text="${todo.title}"
                               th:classappend="${todo.completed} ? 'completed-text fw-semibold' : 'fw-semibold'"></span>
                     </div>
-                    <div th:if="${todo.description}" class="text-muted small mt-1"
+                    <div th:if="${todo.hasDescription()}" class="text-muted small mt-1"
                          th:text="${todo.description}"
                          th:classappend="${todo.completed} ? 'completed-text'"></div>
                     <div class="text-muted" style="font-size:0.7rem;" th:text="${'Created: ' + #temporals.format(todo.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
@@ -105,19 +105,22 @@
                     <form th:action="@{/toggle/{id}(id=${todo.id})}" method="post">
                         <button type="submit" class="btn btn-sm"
                                 th:classappend="${todo.completed} ? 'btn-outline-secondary' : 'btn-outline-success'"
-                                th:title="${todo.completed} ? 'Mark as pending' : 'Mark as done'">
+                                th:title="${todo.completed} ? 'Mark as pending' : 'Mark as done'"
+                                th:aria-label="${todo.completed} ? 'Mark as pending' : 'Mark as done'">
                             <i class="bi" th:classappend="${todo.completed} ? 'bi-arrow-counterclockwise' : 'bi-check-lg'"></i>
                         </button>
                     </form>
                     <!-- Edit -->
-                    <a th:href="@{/edit/{id}(id=${todo.id})}" class="btn btn-sm btn-outline-primary" title="Edit">
+                    <a th:href="@{/edit/{id}(id=${todo.id})}" class="btn btn-sm btn-outline-primary" title="Edit" aria-label="Edit todo">
                         <i class="bi bi-pencil"></i>
+                        <span class="visually-hidden">Edit todo</span>
                     </a>
                     <!-- Delete -->
                     <form th:action="@{/delete/{id}(id=${todo.id})}" method="post"
                           onsubmit="return confirm('Delete this todo?');">
-                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete" aria-label="Delete todo">
                             <i class="bi bi-trash"></i>
+                            <span class="visually-hidden">Delete todo</span>
                         </button>
                     </form>
                 </div>

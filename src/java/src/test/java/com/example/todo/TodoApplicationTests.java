@@ -122,9 +122,12 @@ class TodoApplicationTests {
 
         mockMvc.perform(get("/?filter=active"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("filter", "active"));
+                .andExpect(model().attribute("filter", "active"))
+                .andExpect(model().attribute("todos", org.hamcrest.Matchers.hasSize(1)));
 
-        assertThat(todoService.findByCompleted(false)).hasSize(1);
-        assertThat(todoService.findByCompleted(true)).hasSize(1);
+        mockMvc.perform(get("/?filter=completed"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("filter", "completed"))
+                .andExpect(model().attribute("todos", org.hamcrest.Matchers.hasSize(1)));
     }
 }

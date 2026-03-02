@@ -2,8 +2,10 @@ package com.example.todo.service;
 
 import com.example.todo.model.Todo;
 import com.example.todo.repository.TodoRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +38,7 @@ public class TodoService {
 
     public Todo update(Long id, Todo updated) {
         Todo existing = todoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Todo not found: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found: " + id));
         existing.setTitle(updated.getTitle());
         existing.setDescription(updated.getDescription());
         existing.setCompleted(updated.isCompleted());
@@ -45,12 +47,14 @@ public class TodoService {
 
     public void toggleCompleted(Long id) {
         Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Todo not found: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found: " + id));
         todo.setCompleted(!todo.isCompleted());
         todoRepository.save(todo);
     }
 
     public void deleteById(Long id) {
-        todoRepository.deleteById(id);
+        if (todoRepository.existsById(id)) {
+            todoRepository.deleteById(id);
+        }
     }
 }
